@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageButton
-import com.example.user.hw1.fragments.MainFragment
+
 
 class Main2Activity : AppCompatActivity() {
 

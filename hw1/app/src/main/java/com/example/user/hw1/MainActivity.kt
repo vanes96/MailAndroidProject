@@ -4,7 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.PersistableBundle
-import android.support.v7.app.AppCompatActivity
+
+import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
