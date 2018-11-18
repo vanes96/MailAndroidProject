@@ -19,7 +19,7 @@ class Main2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main2)
 
         button1 = findViewById(R.id.imageButton1)
         button2 = findViewById(R.id.imageButton2)
