@@ -7,6 +7,6 @@ class Activity2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment2)
+        setContentView(R.layout.activity2)
     }
 }
