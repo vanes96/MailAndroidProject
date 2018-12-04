@@ -10,17 +10,22 @@ class MapWorker {
     val ATTRIBUTE_NAME_TEXT:String = "text"
     val ATTRIBUTE_NAME_SUMM:String = "summ"
     val ATTRIBUTE_NAME_IMAGE:String = "image"
+    val ATTRIBURE_NAME_STATE:String = "state"
     val positive:Int = android.R.drawable.arrow_up_float
     val negative:Int = android.R.drawable.arrow_down_float
-    fun addToMap(data: ArrayList<Map<String, Any>>, summ:String, text:String):ArrayList<Map<String, Any>>{
+    fun addToMap(data: ArrayList<Map<String, Any>>, summ:String, text:String, state:Boolean):ArrayList<Map<String, Any>>{
         var m:Map<String, Any>
         m = HashMap<String, Any>()
         var img:Int = 0
+        if(state){ img = positive
+        }
+        else{ img = negative
+
+        }
         m.put(ATTRIBUTE_NAME_TEXT, text)
         m.put(ATTRIBUTE_NAME_SUMM, summ)
-        if(summ.toInt()>0) img = positive
-        else img = negative
         m.put(ATTRIBUTE_NAME_IMAGE, img)
+        m.put(ATTRIBURE_NAME_STATE, state)
         data.add(m)
         return data
     }
@@ -28,19 +33,35 @@ class MapWorker {
         var data = ArrayList<Map<String, Any>>()
         var m = HashMap<String, Any>()
         m.put(ATTRIBUTE_NAME_TEXT, "")
-        m.put(ATTRIBUTE_NAME_SUMM, "")
+        m.put(ATTRIBUTE_NAME_SUMM, "0")
         m.put(ATTRIBUTE_NAME_IMAGE, 0)
+        m.put(ATTRIBURE_NAME_STATE, true)
         data.add(m)
         return data
 
     }
-    fun setAdapter(context: Context?, mylist:ArrayList<Map<String, Any>>):SimpleAdapter{
-        var from= arrayOf(ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_SUMM, ATTRIBUTE_NAME_IMAGE)
-        var to =IntArray(3)
-        to.set(0, R.id.listText)
-        to.set(1, R.id.listSum)
-        to.set(2, R.id.listIm)
-        return SimpleAdapter(context, mylist, R.layout.main3_fragment_list, from, to)
+    fun getTextFromMap(data: ArrayList<Map<String, Any>>, position: Int):Any{
+        var m:Map<String, Any>
+        return data.get(position).get(ATTRIBUTE_NAME_TEXT)!!
     }
+    fun getSummFromMap(data: ArrayList<Map<String, Any>>, position: Int):Any{
+        var m:Map<String, Any>
+        return data.get(position).get(ATTRIBUTE_NAME_SUMM)!!
+    }
+    fun getImFromMap(data: ArrayList<Map<String, Any>>, position: Int):Any{
+        var m:Map<String, Any>
+        return data.get(position).get(ATTRIBUTE_NAME_IMAGE)!!
+    }
+
+    fun getTotal(data: ArrayList<Map<String, Any>>):String{
+        var s:Int = 0
+        for (i in data){
+            if(i.get(ATTRIBURE_NAME_STATE) as Boolean)
+            s = s.plus(i.get(ATTRIBUTE_NAME_SUMM).toString().toInt())
+            else   s = s.minus(i.get(ATTRIBUTE_NAME_SUMM).toString().toInt())
+        }
+        return s.toString()
+    }
+
 
 }

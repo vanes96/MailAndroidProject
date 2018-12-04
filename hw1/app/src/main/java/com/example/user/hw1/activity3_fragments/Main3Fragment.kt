@@ -6,8 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.user.hw1.R
+import com.example.user.hw1.activity3_fragments.adapters.ClickableAdapter
+import com.example.user.hw1.activity3_fragments.tools.DataWorker
 import com.example.user.hw1.activity3_fragments.tools.MapWorker
+import com.example.user.hw1.activity3_fragments.tools.Rate
+import com.google.gson.GsonBuilder
 import java.io.*
 import java.net.URL
 
@@ -19,7 +26,8 @@ class Main3Fragment : Fragment() {
 
     lateinit var plusSum: Button
     lateinit var minusSum: Button
-    lateinit var list: ListView
+    lateinit var list: RecyclerView
+    lateinit var total: TextView
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -31,19 +39,32 @@ class Main3Fragment : Fragment() {
 
         plusSum = view.findViewById(R.id.plusSum)
         minusSum = view.findViewById(R.id.minusSum)
-        list = view.findViewById(R.id.list)
+        list = view.findViewById(R.id.recView)
+        total = view.findViewById(R.id.textView)
+        total.setText(MapWorker().getTotal(DataWorker().readFromFile(context!!)))
 
-        var mylist:ArrayList<Map<String, Any>> = readFromFile()
+        var mylist:ArrayList<Map<String, Any>> = DataWorker().readFromFile(context!!)
 
 
 
-        list.adapter = MapWorker().setAdapter(context, mylist)
-        //list.onItemClickListener.onItemClick()
+        val layoutManager = LinearLayoutManager(
+                requireContext(),
+                RecyclerView.VERTICAL,
+                false
+        )
+
+
+        list.layoutManager = layoutManager
+        list.adapter = ClickableAdapter(context!!)
+
 
 
         plusSum.setOnClickListener {
 
                 val fragment = AddSumFragment()
+            val args = Bundle()
+            args.putBoolean("sum", true)
+            fragment.arguments = args
                 activity.run {
                     val transaction = this!!.supportFragmentManager.beginTransaction()
                     transaction.add(R.id.fragment_container3, fragment)
@@ -55,7 +76,10 @@ class Main3Fragment : Fragment() {
         minusSum.setOnClickListener {
 
             val fragment = AddSumFragment()
-            //fragment.arguments = Bundle() у фрагмента достать из bundle в стадии необходимую инфу
+            val args = Bundle()
+            args.putBoolean("sum", false)
+            fragment.arguments = args
+
             activity.run {
                 val transaction = this!!.supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fragment_container3, fragment)
@@ -65,23 +89,14 @@ class Main3Fragment : Fragment() {
 
         }
 
-            //fun getJson():String {
 
-            var content = URL("http://www.cbr-xml-daily.ru/daily_json.js").readText()
 
-            //val jtk = JSONTokener(content)
-            //try {
-            //val jsonObject = jtk.nextValue() as JSONObject
-            //val builder = StringBuilder()
-            //for (key in jsonObject.keys()) {
-            //    builder.append("$key : ${jsonObject.get(key)}").append("\n")
-            //}
-            //return builder.toString()
-            //} catch (ex: JSONException){
-            //ex.printStackTrace()
-            //return ""
-            //}
-            //}
+        var content = URL("http://www.cbr-xml-daily.ru/daily_json.js").readText()
+        val builder = GsonBuilder()
+        val gson = builder.create()
+        val Rate = gson.fromJson(content, Rate::class.java)
+        Toast.makeText(context, Rate.valute!!.usd!!.value.toString(), Toast.LENGTH_LONG).show()
+
 
 
             return view
@@ -90,37 +105,9 @@ class Main3Fragment : Fragment() {
 
     }
 
-    fun readFromFile():ArrayList<Map<String, Any>> {
-        try {
-            context!!.openFileInput("myList.list").use {
-                val objectInput = ObjectInputStream(it)
-                var list: ArrayList<Map<String, Any>> = objectInput.readObject() as ArrayList<Map<String, Any>>
-                objectInput.close()
-                return list
-                //val file = InputStreamReader(context!!.openFileInput("myMap.map"))
-                //val br = BufferedReader(file)
-                //var line = br.readLine()
-                //val all = StringBuilder()
-                //while(line!= null){
-                //all.append(line + "\n")
-                //listItems.add(line)
-                // line = br.readLine()
 
 
-                //listItems.add(all.toString())
-            }
 
-        } catch (e: IOException) {
-            Toast.makeText(context, "No data or corrupted data", Toast.LENGTH_LONG)
-            return MapWorker().noMap()
-        }
-
-    }
-
-    fun dataConstruct(line: String){
-
-
-    }
 
 
 }
